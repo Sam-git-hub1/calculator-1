@@ -1,0 +1,305 @@
+# Corner
+C# Corner Search
+TECHNOLOGIES
+ANSWERS
+LEARN
+NEWS
+BLOGS
+VIDEOS
+INTERVIEW PREP
+BOOKS
+EVENTS
+CAREER
+MEMBERS
+JOBS
+Matching Game Of Image In Windows Application Using C# .Net
+Vinay Singh Vinay Singh  Updated date Jul 07, 2016
+ 13.4k 5 1
+
+facebook
+twitter
+linkedIn
+Reddit
+WhatsApp
+Download Free .NET & JAVA Files API
+Try Free File Format APIs for Word/Excel/PDF
+MatchingGameOfImageInWindowsApplica
+This blog will show you how you can create a very cool image matching game for the kids, using C#.NET in Windows Application. Thus, for this article, we will create a new Windows Application and design the form, as shown below.
+ 
+design
+ 
+Afterwards, we will add the code, given below, into the form.cs.
+using System;  
+using System.Collections.Generic;  
+using System.Drawing;  
+using System.Windows.Forms;  
+  
+namespace MatchingGame  
+{  
+    public partial class Form1 : Form  
+    {  
+        Label firstClicked = null;  
+        Label secondClicked = null;  
+  
+        // Use this Random object to choose random icons for the squares.  
+        Random random = new Random();  
+  
+        //Symbol show as image  
+        List<string> icons = new List<string>()   
+        {   
+            "!", "!", "N", "N", ",", ",", "k", "k",  
+            "b", "b", "v", "v", "w", "w", "z", "z"  
+        };  
+  
+        /// <summary>   
+        /// Assign each icon from the list of icons to a random square   
+        /// </summary>   
+        private void AssignIconsToSquares()  
+        {  
+            foreach (Control control in tableLayoutPanel1.Controls)  
+            {  
+                Label iconLabel = control as Label;  
+                if (iconLabel != null)  
+                {  
+                    int randomNumber = random.Next(icons.Count);  
+                    iconLabel.Text = icons[randomNumber];  
+                    iconLabel.ForeColor = iconLabel.BackColor;  
+                    icons.RemoveAt(randomNumber);  
+                }  
+            }  
+        }  
+  
+  
+        public Form1()  
+        {  
+            InitializeComponent();  
+            AssignIconsToSquares();  
+        }  
+  
+        /// <summary>   
+        /// Every label's Click event is handled by this event handler.  
+        /// </summary>   
+        /// <param name="sender">The label that was clicked.</param>  
+        /// <param name="e"></param>  
+        private void label_Click(object sender, EventArgs e)  
+        {  
+            if (timer1.Enabled == true)  
+                return;  
+  
+            Label clickedLabel = sender as Label;  
+  
+            if (clickedLabel != null)  
+            {  
+                if (clickedLabel.ForeColor == Color.Black)  
+                    // All done - leave the if statements.  
+                    return;  
+  
+                if (firstClicked == null)  
+                {  
+                    firstClicked = clickedLabel;  
+                    firstClicked.ForeColor = Color.Black;  
+  
+                    // All done - leave the if statements.  
+                    return;  
+                }  
+  
+                secondClicked = clickedLabel;  
+                secondClicked.ForeColor = Color.Black;  
+  
+                // Check to see if the player won.  
+                CheckForWinner();  
+  
+                if (firstClicked.Text == secondClicked.Text)  
+                {  
+                    firstClicked = null;  
+                    secondClicked = null;  
+                    return;  
+                }            
+                timer1.Start();  
+            }  
+        }  
+  
+        /// <summary>   
+        /// This timer is started when the player clicks    
+        /// two icons that don't match,   
+        /// so it counts three quarters of a second    
+        /// and then turns itself off and hides both icons.  
+        /// </summary>   
+        /// <param name="sender"></param>  
+        /// <param name="e"></param>  
+        private void timer1_Tick(object sender, EventArgs e)  
+        {  
+            // Stop the timer.  
+            timer1.Stop();  
+  
+            // Hide both icons.  
+            firstClicked.ForeColor = firstClicked.BackColor;  
+            secondClicked.ForeColor = secondClicked.BackColor;  
+  
+            // Reset firstClicked and secondClicked  .  
+            firstClicked = null;  
+            secondClicked = null;  
+        }  
+  
+        /// <summary>   
+        /// Check every icon to see if it is matched, by    
+        /// comparing its foreground color to its background color.    
+        /// If all of the icons are matched, the player wins.   
+        /// </summary>   
+        private void CheckForWinner()  
+        {  
+            foreach (Control control in tableLayoutPanel1.Controls)  
+            {  
+                Label iconLabel = control as Label; 
+
+  
+                if (iconLabel != null)  
+                {  
+                    if (iconLabel.ForeColor == iconLabel.BackColor)  
+                        return;  
+                }  
+            }  
+            //On completion show message  
+            MessageBox.Show("You matched all the icons!", "Congratulations!");  
+            Close();  
+        }  
+  
+    }  
+} 
+Now,
+
+using System;
+
+using System.Collections.Generic;
+
+using System.Linq;
+
+using System.Text;
+
+using System.Threading.Tasks;
+
+using System.Data.SqlClient;
+
+namespace TestApp2_SELECT
+
+{
+
+    class Program
+
+    {
+
+        static void Main(string[] args)
+
+        {
+
+            //set the connection string
+
+            string connString = @"Server =.\SQL2K17; Database = SampleDB; Trusted_Connection = True;";
+
+            //variables to store the query results
+
+            int empID;
+
+            string empCode, empFirstName, empLastName, locationCode, locationDescr;
+
+            try
+
+            {
+
+                //sql connection object
+
+                using (SqlConnection conn = new SqlConnection(connString))
+
+                {
+
+                    //retrieve the SQL Server instance version
+
+                    string query = @"SELECT e.id,e.code,e.firstName,e.lastName,l.code,l.descr
+
+                                     FROM employees e
+
+                                     INNER JOIN location l on e.locationID=l.id;
+
+                                     ";
+
+                    //define the SqlCommand object
+
+                    SqlCommand cmd = new SqlCommand(query, conn);
+
+                    //open connection
+
+                    conn.Open();
+
+                    //execute the SQLCommand
+
+                    SqlDataReader dr = cmd.ExecuteReader();
+
+                    Console.WriteLine(Environment.NewLine + "Retrieving data from database..." + Environment.NewLine);
+
+                    Console.WriteLine("Retrieved records:");
+
+                    //check if there are records
+
+                    if (dr.HasRows)
+
+                    {
+
+                        while (dr.Read())
+
+                        {
+
+                            empID = dr.GetInt32(0);
+
+                            empCode = dr.GetString(1);
+
+                            empFirstName = dr.GetString(2);
+
+                            empLastName = dr.GetString(3);
+
+                            locationCode = dr.GetString(4);
+
+                            locationDescr = dr.GetString(5);
+
+                            //display retrieved record
+
+                            Console.WriteLine("{0},{1},{2},{3},{4},{5}", empID.ToString(), empCode, empFirstName, empLastName, locationCode, locationDescr);
+
+                        }
+
+                    }
+
+                    else
+
+                    {
+
+                        Console.WriteLine("No data found.");
+
+                    }
+
+                    //close data reader
+
+                    dr.Close();
+
+                    //close connection
+
+                    conn.Close();
+
+                }
+
+            }
+
+            catch (Exception ex)
+
+            {
+
+                //display error message
+
+                Console.WriteLine("Exception: " + ex.Message);
+
+            }
+
+        }
+
+    }
+
+}
